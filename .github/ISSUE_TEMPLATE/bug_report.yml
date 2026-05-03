@@ -1,0 +1,77 @@
+name: Bug Report
+description: Something isn't working correctly
+labels: ["bug", "triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please fill this out as completely as possible.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Web app
+        - API / backend
+        - Audit Engine (compliance mapping)
+        - Evidence collection (integrations)
+        - Gap report generation
+        - Audit package export
+        - Infrastructure / deployment
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      placeholder: A clear and concise description of what the bug is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Go to '...'
+        2. Upload policy document '...'
+        3. Click 'Run gap analysis'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      placeholder: |
+        - OS: macOS 14.4
+        - Node: 20.11.0
+        - Python: 3.11.8
+        - Browser: Chrome 123
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs / Screenshots
+      description: Paste any error output here (redact sensitive data)

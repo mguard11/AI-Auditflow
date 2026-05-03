@@ -1,0 +1,49 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+labels: ["enhancement"]
+
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Compliance framework support (new framework)
+        - Evidence source integration (new connector)
+        - Audit agent capability
+        - Dashboard / reporting
+        - API / developer experience
+        - Infrastructure / performance
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      placeholder: "As a compliance officer, I need to... because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Business Priority
+      options:
+        - Blocker (losing deals)
+        - High (design partner request)
+        - Medium (nice to have)
+        - Low (future consideration)
