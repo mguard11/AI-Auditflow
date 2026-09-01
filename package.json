@@ -5,6 +5,7 @@
   "description": "Vertical AI agents for compliance & audit automation",
   "workspaces": [
     "apps/web",
+    "apps/marketing",
     "packages/*"
   ],
   "scripts": {
