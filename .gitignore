@@ -63,6 +63,10 @@ yarn-error.log*
 # Pinecone / vector DBs
 *.index
 
+# Next.js
+next-env.d.ts
+tsconfig.tsbuildinfo
+
 # Misc
 *.DS_Store
 .turbo
