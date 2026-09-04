@@ -32,11 +32,12 @@ AuditFlow AI eliminates the 200–400 hours companies spend on manual compliance
 ```
 auditflow-ai/
 ├── apps/
-│   ├── web/              # Next.js 14 frontend (React + TypeScript + Tailwind)
-│   └── api/              # FastAPI backend (Python 3.11+)
+│   ├── marketing/       # Next.js 14 marketing site (static export for Cloudflare Pages)
+│   ├── web/             # Next.js 14 frontend (React + TypeScript + Tailwind)
+│   └── api/             # FastAPI backend (Python 3.11+)
 ├── packages/
 │   ├── audit-engine/     # Core audit logic, framework mappers, evidence extractors
-│   ├── llm-client/       # Claude API wrapper with retry, streaming, cost tracking
+│   ├── llm-client/       # Open-source LLM wrapper (vLLM + Llama 3 8B) with retry, streaming, cost tracking
 │   ├── shared-types/     # Shared TypeScript types across apps
 │   └── ui-kit/           # Shared React component library
 ├── infra/
@@ -56,13 +57,14 @@ auditflow-ai/
 
 | Layer | Technology |
 |-------|-----------|
-| **AI Core** | Claude API (Sonnet) · Pinecone / pgvector for RAG |
-| **Orchestration** | LangGraph · Custom agent loops |
+| **AI Core** | vLLM + Llama 3 8B (self-hosted) · pgvector for RAG |
+| **Orchestration** | Custom agent pipeline (ingest → map → collect → gap → report) |
 | **Integrations** | Google Drive · Notion · Jira · GitHub · AWS Config · Slack (via MCP) |
 | **Backend** | Python 3.11 · FastAPI · PostgreSQL · Celery · Redis |
-| **Frontend** | Next.js 14 · TypeScript · Tailwind CSS · Shadcn/ui |
-| **Security** | SOC 2 Type I (Vanta) · E2E encryption · SSO/SAML |
-| **Infra** | AWS ECS · RDS · S3 · Vercel (web) |
+| **Frontend** | Next.js 14 · TypeScript · Tailwind CSS |
+| **Marketing** | Next.js 14 static export · Cloudflare Pages |
+| **Security** | SOC 2 Type II · E2E encryption · SSO/SAML · Self-hosted data residency |
+| **Infra** | Docker Compose (dev) · Kubernetes + Helm (prod) · AWS / GCP / Azure |
 
 ---
 
@@ -135,6 +137,65 @@ cd apps/api && pytest
 # Web tests only
 cd apps/web && pnpm test
 ```
+
+---
+
+## Deployment
+
+### Marketing Site (`apps/marketing`)
+
+The marketing site is built with `output: 'export'` for static hosting.
+
+**Cloudflare Pages (recommended):**
+1. Create a new Pages project in the Cloudflare dashboard
+2. Connect your GitHub repo `AI-Auditflow`
+3. Select branch `main` (or `feat/marketing-site` if PR #1 is not merged)
+4. Build configuration:
+   - Build command: `pnpm --filter @mangologic/marketing build`
+   - Output directory: `apps/marketing/out`
+5. Add custom domain `www.mangologic.ai` in Pages settings
+
+**Local static build:**
+```bash
+cd apps/marketing
+pnpm build
+pnpm export
+# Output in apps/marketing/out/
+```
+
+### Product Web App (`apps/web`)
+
+Option A: Vercel (recommended for MVP)
+- Connect repo, framework preset: Next.js
+- Environment: `NEXT_PUBLIC_API_URL` pointing to your API
+
+Option B: Self-hosted
+```bash
+cd apps/web
+pnpm build
+pnpm start
+# Run behind nginx/Caddy in your VPC
+```
+
+### Backend API + Workers
+
+Deploy as a containerized stack in your VPC.
+
+```bash
+# Build API image
+docker build -f infra/docker/Dockerfile.api -t auditflow/api:latest .
+
+# Deploy with Docker Compose (dev/single-node)
+docker compose -f infra/docker/docker-compose.dev.yml up -d
+
+# Or deploy to Kubernetes with Helm (production)
+helm install auditflow infra/k8s/helm/auditflow
+```
+
+**LLM Infrastructure:**
+- Deploy vLLM + Llama 3 8B on 1x A100 40GB (or 2x A100 for tensor parallelism)
+- Expose OpenAI-compatible API endpoint for agents
+- All LLM calls stay within your VPC
 
 ---
 
