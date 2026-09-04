@@ -15,8 +15,13 @@ from dataclasses import dataclass
 from typing import Any
 
 import structlog
-from anthropic import AsyncAnthropic
 
+from auditflow_llm_client.types import (
+    ChatMessage,
+    LLMProvider,
+    LLMRequest,
+    MessageRole,
+)
 from src.lib.config import settings
 
 logger = structlog.get_logger()
@@ -56,7 +61,7 @@ class ControlMapping:
 
 
 class ControlMapperAgent:
-    def __init__(self, client: AsyncAnthropic) -> None:
+    def __init__(self, client: LLMProvider) -> None:
         self.client = client
 
     async def run(
@@ -88,16 +93,20 @@ Policy excerpt (chunk_id: {chunk["id"]}):
 
 Map this excerpt to relevant controls."""
 
-        response = await self.client.messages.create(
-            model=settings.ANTHROPIC_MODEL,
-            max_tokens=1024,
-            system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": prompt}],
+        response = await self.client.complete(
+            LLMRequest(
+                messages=[
+                    ChatMessage(role=MessageRole.SYSTEM, content=SYSTEM_PROMPT),
+                    ChatMessage(role=MessageRole.USER, content=prompt),
+                ],
+                max_tokens=1024,
+                temperature=0.2,
+            )
         )
 
         try:
-            data = json.loads(response.content[0].text)
-        except (json.JSONDecodeError, IndexError, KeyError) as e:
+            data = json.loads(response.content)
+        except (json.JSONDecodeError, KeyError) as e:
             logger.warning("mapper.parse_error", chunk_id=chunk["id"], error=str(e))
             return []
 

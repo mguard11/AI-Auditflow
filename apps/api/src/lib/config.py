@@ -11,8 +11,13 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     REDIS_URL: str = "redis://localhost:6379/0"
 
-    ANTHROPIC_API_KEY: str
+    ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
+
+    LLM_PROVIDER: str = "openai_compat"
+    LLM_BASE_URL: str = "http://localhost:8000/v1"
+    LLM_API_KEY: str = ""
+    LLM_MODEL: str = "meta-llama/Llama-3-8B-Instruct"
 
     VECTOR_BACKEND: str = "pgvector"
     PINECONE_API_KEY: str = ""

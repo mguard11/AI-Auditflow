@@ -16,8 +16,9 @@ from dataclasses import dataclass, field
 from typing import Any
 
 import structlog
-from anthropic import AsyncAnthropic
 
+from auditflow_llm_client.providers.openai_compat import OpenAIClient, OpenAIClientConfig
+from auditflow_llm_client.types import LLMProvider
 from src.agents.evidence_collector import EvidenceCollectorAgent
 from src.agents.gap_analyzer import GapAnalyzerAgent
 from src.agents.ingestion import IngestionAgent
@@ -48,11 +49,24 @@ class AuditRunResult:
     error: str | None = None
 
 
+def build_llm_client() -> LLMProvider:
+    provider = settings.LLM_PROVIDER
+    if provider == "openai_compat":
+        return OpenAIClient(
+            OpenAIClientConfig(
+                base_url=settings.LLM_BASE_URL,
+                api_key=settings.LLM_API_KEY or None,
+                model=settings.LLM_MODEL,
+            )
+        )
+    raise ValueError(f"Unsupported LLM_PROVIDER: {provider}")
+
+
 class AuditOrchestratorAgent:
     """Top-level agent that coordinates the full audit pipeline."""
 
-    def __init__(self) -> None:
-        self.client = AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY)
+    def __init__(self, client: LLMProvider | None = None) -> None:
+        self.client = client or build_llm_client()
         self.run_logger = AgentRunLogger()
 
         self.ingestion = IngestionAgent(self.client)

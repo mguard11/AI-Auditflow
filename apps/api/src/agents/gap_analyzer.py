@@ -12,8 +12,13 @@ from dataclasses import dataclass, field
 from typing import Any
 
 import structlog
-from anthropic import AsyncAnthropic
 
+from auditflow_llm_client.types import (
+    ChatMessage,
+    LLMProvider,
+    LLMRequest,
+    MessageRole,
+)
 from src.agents.mapper import ControlMapping
 from src.lib.config import settings
 
@@ -57,7 +62,7 @@ class GapReport:
 
 
 class GapAnalyzerAgent:
-    def __init__(self, client: AsyncAnthropic) -> None:
+    def __init__(self, client: LLMProvider) -> None:
         self.client = client
 
     async def run(
@@ -104,13 +109,15 @@ class GapAnalyzerAgent:
             control_id=control_id,
             control_description=control_description,
         )
-        response = await self.client.messages.create(
-            model=settings.ANTHROPIC_MODEL,
-            max_tokens=512,
-            messages=[{"role": "user", "content": prompt}],
+        response = await self.client.complete(
+            LLMRequest(
+                messages=[ChatMessage(role=MessageRole.USER, content=prompt)],
+                max_tokens=512,
+                temperature=0.2,
+            )
         )
         try:
-            data = json.loads(response.content[0].text)
+            data = json.loads(response.content)
             return data.get("suggestions", [])
-        except (json.JSONDecodeError, IndexError):
+        except (json.JSONDecodeError, KeyError):
             return []

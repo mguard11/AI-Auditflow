@@ -108,9 +108,11 @@ Web runs at `http://localhost:3000` · API at `http://localhost:8000`
 See [`apps/api/.env.example`](apps/api/.env.example) and [`apps/web/.env.example`](apps/web/.env.example) for required variables.
 
 Key variables:
-- `ANTHROPIC_API_KEY` — Claude API key
+- `LLM_PROVIDER` — LLM provider type (`openai_compat` for vLLM/Ollama)
+- `LLM_BASE_URL` — OpenAI-compatible API endpoint (e.g., `http://localhost:8000/v1`)
+- `LLM_API_KEY` — API key for LLM provider (optional for local vLLM)
+- `LLM_MODEL` — Model identifier (e.g., `meta-llama/Llama-3-8B-Instruct`)
 - `DATABASE_URL` — PostgreSQL connection string
-- `PINECONE_API_KEY` — Vector DB for RAG
 - `REDIS_URL` — Job queue and caching
 
 ---
