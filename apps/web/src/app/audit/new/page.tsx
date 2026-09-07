@@ -18,7 +18,7 @@ export default function NewAuditPage() {
       <div>
         <h1 className="text-2xl font-semibold text-white">New Audit Run</h1>
         <p className="text-sm text-slate-400 mt-1">
-          Upload your policy documents and we'll map them to your compliance frameworks.
+          Upload your policy documents and we&apos;ll map them to your compliance frameworks.
         </p>
       </div>
 
