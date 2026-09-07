@@ -10,6 +10,24 @@ When creating or updating the Cloudflare Pages project for `apps/marketing`, use
 - **Output directory:** `out`
 - **Environment variables:** None required for MVP
 
+## Local Build Command
+
+To build the static export locally:
+
+```bash
+cd apps/marketing
+pnpm build
+# Output goes to apps/marketing/out/
+```
+
+To preview the static export locally:
+
+```bash
+cd apps/marketing
+pnpm build
+npx serve out
+```
+
 ## Why These Settings Matter
 
 - **Root directory:** Setting this to `apps/marketing` ensures Cloudflare treats the marketing app as the project root. Without this, Cloudflare may auto-detect the monorepo root `requirements.txt` and attempt to run `pip install`, which fails because the Python backend lives in `apps/api`, not `apps/marketing`.
