@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "export": "next build",
-    "deploy": "wrangler pages deploy out",
+    "deploy": "wrangler deploy",
     "preview": "pnpm build && npx serve out"
   },
   "dependencies": {
