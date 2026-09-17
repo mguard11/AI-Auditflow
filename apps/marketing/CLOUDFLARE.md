@@ -34,6 +34,23 @@ npx serve out
 - **Output directory:** Next.js `output: 'export'` writes static files to `apps/marketing/out/`.
 - **Framework preset:** Use `None` / `Custom` because the marketing app uses a standalone `next.config.js` with static export, not a standard Next.js deployment.
 
+## Deploy Command
+
+To deploy the static export with Wrangler from the monorepo root:
+
+```bash
+pnpm --filter @mangologic/marketing deploy
+```
+
+Or run the command directly:
+
+```bash
+cd apps/marketing
+pnpm deploy
+```
+
+The `deploy` script runs `wrangler pages deploy out`, which uses `apps/marketing/out` as the asset directory.
+
 ## Custom Domain
 
 After deployment, add `www.mangologic.ai` (or your preferred domain) in **Pages → Custom domains**.

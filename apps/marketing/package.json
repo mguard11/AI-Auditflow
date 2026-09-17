@@ -9,6 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "export": "next build",
+    "deploy": "wrangler pages deploy out",
     "preview": "pnpm build && npx serve out"
   },
   "dependencies": {
@@ -27,6 +28,7 @@
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "wrangler": "4.133.0"
   }
 }
