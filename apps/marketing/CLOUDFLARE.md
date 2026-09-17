@@ -39,14 +39,14 @@ npx serve out
 To deploy the static export with Wrangler from the monorepo root:
 
 ```bash
-pnpm --filter @mangologic/marketing deploy
+pnpm --filter @mangologic/marketing run deploy
 ```
 
 Or run the command directly:
 
 ```bash
 cd apps/marketing
-pnpm deploy
+pnpm run deploy
 ```
 
 The `deploy` script runs `wrangler pages deploy out`, which uses `apps/marketing/out` as the asset directory.
